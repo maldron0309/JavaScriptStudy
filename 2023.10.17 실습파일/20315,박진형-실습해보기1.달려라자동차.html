@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실습해보기1.Car Animation</title>
+  <style>
+    #title1 {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    #title2 {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
+    #car,
+    #car2 {
+      width: 300px;
+    }
+
+    div {
+      margin: 20px 0 0 10px;
+      font-size: 30px;
+    }
+
+    #btn1,
+    #btn2 {
+      margin: 20px 0 0 10px;
+      font-size: 20px;
+      padding: 5px 20px 5px 20px;
+      color: aliceblue;
+      border: none;
+      background: skyblue;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    #btn1:hover,
+    #btn2:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <p id="title1">setInterval Animation</p>
+  <img id="car" src="./img/car.png" alt="car" />
+  <div>
+    x-position: <span id="value">0</span>
+  </div>
+  <input type="button" id="btn1" value="START!">
+
+  <p id="title2">requestAnimationFrame Animation</p>
+  <img id="car2" src="./img/car2.png" alt="car" />
+  <div>
+    x-position: <span id="value2">0</span>
+  </div>
+  <input type="button" id="btn2" value="START!">
+
+  <script>
+    // setInterval Car
+    const car = document.querySelector("#car");
+    const position = document.querySelector("#value");
+    const start_btn1 = document.querySelector("#btn1");
+
+    let flag1 = false;
+    let xPos1 = 0;
+    let carSize1 = car.offsetWidth;
+    let goCar1;
+
+    const render1 = () => {
+      position.textContent = xPos1;
+      xPos1 += 1;
+      car.style.transform = `translateX(${xPos1}px)`;
+
+      if (xPos1 >= window.innerWidth - carSize1) {
+        xPos1 = 0;
+        clearInterval(goCar1);
+        flag1 = false;
+      }
+    }
+
+    start_btn1.addEventListener("click", () => {
+      if (flag1) {
+        start_btn1.setAttribute("value", "START!")
+        start_btn1.setAttribute("style", "background:skyblue")
+        clearInterval(goCar1);
+        flag1 = false;
+      } else {
+        start_btn1.setAttribute("value", "STOP!");
+        start_btn1.setAttribute("style", "background:red")
+        goCar1 = setInterval(render1, 1.5);
+        flag1 = true;
+      }
+    });
+
+    // requestAnimationFrame Car
+    const car2 = document.querySelector("#car2");
+    const position2 = document.querySelector("#value2");
+    const start_btn2 = document.querySelector("#btn2");
+
+    let xPos2 = 0;
+    let flag2 = false;
+    let animationId2;
+
+    const render2 = () => {
+      xPos2 += 4;
+      car2.style.transform = `translateX(${xPos2}px)`;
+      position2.textContent = xPos2; // 추가된 부분
+
+      if (xPos2 >= window.innerWidth - carSize1) {
+        xPos2 = 0;
+        cancelAnimationFrame(animationId2);
+        flag2 = false;
+      } else {
+        animationId2 = requestAnimationFrame(render2);
+      }
+    }
+
+    start_btn2.addEventListener("click", () => {
+      if (flag2) {
+        start_btn2.setAttribute("value", "START!")
+        start_btn2.setAttribute("style", "background:skyblue")
+        cancelAnimationFrame(animationId2);
+        flag2 = false;
+      } else {
+        start_btn2.setAttribute("value", "STOP!");
+        start_btn2.setAttribute("style", "background:red")
+        animationId2 = requestAnimationFrame(render2);
+        flag2 = true;
+      }
+    });
+  </script>
+</body>
+
